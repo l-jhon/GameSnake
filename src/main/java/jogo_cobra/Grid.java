@@ -43,7 +43,6 @@ public class Grid extends JPanel implements ActionListener {
 
 	private boolean playing = true;
 
-
 	private Image bola;
 	private Image comida;
 	private Image cabeca;
@@ -52,14 +51,23 @@ public class Grid extends JPanel implements ActionListener {
 		
 		addKeyListener(new TAdapter());
 
-		setBackground(Color.BLACK);
-
+		setBackground(Color.GRAY);
 		setFocusable(true);
 		setSize(Constants.WIDTH, Constants.HEIGHT);
 
 		inicializaJogo();
-		
 		setImages();
+	}
+	
+	public void inicializaJogo() {
+
+		x[0] = 50;
+		y[0] = 50;
+
+		positionFood();
+
+		Timer time = new Timer(Constants.DELAY, this);
+		time.start();
 	}
 	
 	public void setImages() {
@@ -68,18 +76,7 @@ public class Grid extends JPanel implements ActionListener {
 		cabeca = new ImageIcon("C:\\Users\\pedro\\Desktop\\cabeça.png").getImage();
 	}
 
-	public void inicializaJogo() {
-
-		x[0] = 50;
-		y[0] = 50;
-
-		localComida();
-
-		Timer time = new Timer(Constants.DELAY, this);
-		time.start();
-	}
-
-	public void localComida() {
+	public void positionFood() {
 		int random = (int) (Math.random() * Constants.RAND_POSICAO);
 		comida_x = (random * Constants.TAMANHO_PONTO);
 
@@ -93,17 +90,20 @@ public class Grid extends JPanel implements ActionListener {
 		super.paint(g);
 
 		if (playing) {
+			
 			g.drawImage(comida, comida_x, comida_y, this);
 
 			for (int i = 0; i < pontos; i++) {
+			
 				if (i == 0) {
 					g.drawImage(cabeca, x[i], y[i], this);
 				} else {
 					g.drawImage(bola, x[i], y[i], this);
 				}
+				
 			}
 
-			desenharPontuacao(g);
+			drawPoints(g);
 
 			Toolkit.getDefaultToolkit().sync();
 
@@ -113,7 +113,8 @@ public class Grid extends JPanel implements ActionListener {
 		}
 	}
 
-	public void desenharPontuacao(Graphics g) {
+	public void drawPoints(Graphics g) {
+		
 		PONTUACAO_TOTAL = PONTUAÇÃO + BONUS;
 		PONTUACAO_MSG = "PONTUAÇÃO: " + PONTUACAO_TOTAL;
 		PONTUACAO_METRICA = this.getFontMetrics(PONTUACAO_FONTE);
@@ -126,12 +127,12 @@ public class Grid extends JPanel implements ActionListener {
 	// Desenha mensagem no final do jogo
 	public void endGame(Graphics g) {
 
-		String msg_total = "FIM DE JOGO! Sua pontuação total: " + PONTUACAO_TOTAL;
-		String msg_pontuacao = "Pontuação por alimento: " + PONTUAÇÃO ;
-		String msg_bonus = " Seu Bonus: " + BONUS ;
-		int pontos_cobra = this.pontos - 1;
-		String msg_tamanho = " Tamanho da Cobra: " + pontos_cobra;
-		String msg_morte = " Morte da Cobra: (" + morte_x + " , " + morte_y + ")" ;
+		String msgScoreTotal = "FIM DE JOGO! Sua pontuação total: " + PONTUACAO_TOTAL;
+		String msgScoreFood = "Pontuação por alimento: " + PONTUAÇÃO ;
+		String msgBonus = " Seu Bonus: " + BONUS ;
+		int sizeSnake = this.pontos - 1;
+		String msgSizeSnake = " Tamanho da Cobra: " + sizeSnake;
+		String msgPositionDeath = " Morte da Cobra: (" + morte_x + " , " + morte_y + ")" ;
 
 		Font pequena = new Font("Consolas", Font.BOLD, 14);
 		FontMetrics metrica = this.getFontMetrics(pequena);
@@ -139,10 +140,10 @@ public class Grid extends JPanel implements ActionListener {
 		g.setColor(Color.white);	
 		g.setFont(pequena);
 
-		g.drawString(msg_total, (Constants.WIDTH - metrica.stringWidth(msg_total)) / 2, (Constants.HEIGHT / 2) - 20);
-		g.drawString(msg_pontuacao, (Constants.WIDTH - metrica.stringWidth(msg_pontuacao)) / 2, Constants.HEIGHT / 2);
-		g.drawString(msg_bonus, (Constants.WIDTH - metrica.stringWidth(msg_bonus)) / 2, (Constants.HEIGHT / 2) + 20);
-		g.drawString(msg_tamanho, (Constants.WIDTH - metrica.stringWidth(msg_tamanho)) / 2, (Constants.HEIGHT / 2) + 40);
+		g.drawString(msgScoreTotal, (Constants.WIDTH - metrica.stringWidth(msgScoreTotal)) / 2, (Constants.HEIGHT / 2) - 20);
+		g.drawString(msgScoreFood, (Constants.WIDTH - metrica.stringWidth(msgScoreFood)) / 2, Constants.HEIGHT / 2);
+		g.drawString(msgBonus, (Constants.WIDTH - metrica.stringWidth(msgBonus)) / 2, (Constants.HEIGHT / 2) + 20);
+		g.drawString(msgSizeSnake, (Constants.WIDTH - metrica.stringWidth(msgSizeSnake)) / 2, (Constants.HEIGHT / 2) + 40);
 		g.drawString(msg_morte, (Constants.WIDTH - metrica.stringWidth(msg_morte)) / 2, (Constants.HEIGHT / 2) + 60);
 		
 	}
@@ -157,8 +158,8 @@ public class Grid extends JPanel implements ActionListener {
 				
 				// CRIAR OBSTACULOS ****************************
 			}
-			
-			localComida();
+		
+			positionFood();
 		}
 	}
 
