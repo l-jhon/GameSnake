@@ -10,7 +10,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.ResourceBundle;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -144,7 +143,7 @@ public class Grid extends JPanel implements ActionListener {
 		g.drawString(msgScoreFood, (Constants.WIDTH - metrica.stringWidth(msgScoreFood)) / 2, Constants.HEIGHT / 2);
 		g.drawString(msgBonus, (Constants.WIDTH - metrica.stringWidth(msgBonus)) / 2, (Constants.HEIGHT / 2) + 20);
 		g.drawString(msgSizeSnake, (Constants.WIDTH - metrica.stringWidth(msgSizeSnake)) / 2, (Constants.HEIGHT / 2) + 40);
-		g.drawString(msg_morte, (Constants.WIDTH - metrica.stringWidth(msg_morte)) / 2, (Constants.HEIGHT / 2) + 60);
+		g.drawString(msgPositionDeath, (Constants.WIDTH - metrica.stringWidth(msgPositionDeath)) / 2, (Constants.HEIGHT / 2) + 60);
 		
 	}
 
@@ -193,40 +192,19 @@ public class Grid extends JPanel implements ActionListener {
 
 	}
 
-	// Método para checar colisão entre a cobrinha e as bordas do jogo
 	public void checarColisao() {
-		// Para cada ponto, verifica se este está em posição com outro ponto
-		// se estiver ele avista que o jogador parou de jogar devido a colisão
+		
 		for (int i = pontos; i > 0; i--) {
 			if ((i > 4) && (x[0] == x[i]) && (y[0] == y[i])) {
                 playing = false;
 				morte_x = x[i];
 				morte_y = y[i];
 			}
-
 		}
-		
 		// CHECAR OBSTACULOS ****************************
-
-		if (y[0] > Constants.HEIGHT) {
-			y[0] = 0;
-			//estaJogando = false;
-		}
-
-		if (y[0] < 0) {
-			y[0] = Constants.HEIGHT;
-			//estaJogando = false;
-		}
-
-		if (x[0] > Constants.WIDTH) {
-			x[0] = 0;
-			//estaJogando = false;
-		}
-
-		if (x[0] < 0) {
-			x[0] = Constants.WIDTH;
-			//estaJogando = false;
-		}
+		
+		y[0] = (y[0] > Constants.HEIGHT) ? 0 : (y[0] < 0)? Constants.HEIGHT: y[0];
+		x[0] = (x[0] > Constants.WIDTH) ? 0 : (x[0] < 0)? Constants.WIDTH: x[0];
 	}
 
 	public void actionPerformed(ActionEvent e) {
