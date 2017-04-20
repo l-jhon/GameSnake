@@ -22,13 +22,13 @@ public class Grid extends JPanel implements ActionListener {
 	private int[] x = new int[Constants.TODOS_PONTOS];
 	private int[] y = new int[Constants.TODOS_PONTOS];
 
-	private int pontos;
+	private int pontos = 1;
 	private int comida_x;
 	private int comida_y;
 	private int morte_x;
 	private int morte_y;
 
-	private int PONTUAÇÃO = 1;
+	private int PONTUAÇÃO = 0;
 	private int BONUS = 0;
 	private int PONTUACAO_TOTAL = 0;
 	
@@ -43,41 +43,40 @@ public class Grid extends JPanel implements ActionListener {
 
 	private boolean playing = true;
 
-	private Timer tempo;
 
 	private Image bola;
 	private Image comida;
 	private Image cabeca;
 
 	public Grid() {
+		
 		addKeyListener(new TAdapter());
 
 		setBackground(Color.BLACK);
 
-		ImageIcon bola_ = new ImageIcon("C:\\Users\\pedro\\Desktop\\bola.png");
-		bola = bola_.getImage();
-
-		ImageIcon comida_ = new ImageIcon("C:\\Users\\pedro\\Desktop\\comida.png");
-		comida = comida_.getImage();
-
-		ImageIcon cabeca_ = new ImageIcon("C:\\Users\\pedro\\Desktop\\cabeça.png");
-		cabeca = cabeca_.getImage();
-
 		setFocusable(true);
 		setSize(Constants.WIDTH, Constants.HEIGHT);
 
-		inicializateGame();
+		inicializaJogo();
+		
+		setImages();
+	}
+	
+	public void setImages() {
+		bola = new ImageIcon("C:\\Users\\pedro\\Desktop\\bola.png").getImage();
+		comida = new ImageIcon("C:\\Users\\pedro\\Desktop\\comida.png").getImage();
+		cabeca = new ImageIcon("C:\\Users\\pedro\\Desktop\\cabeça.png").getImage();
 	}
 
-	public void inicializateGame() {
-		
+	public void inicializaJogo() {
+
 		x[0] = 50;
 		y[0] = 50;
 
 		localComida();
 
-		tempo = new Timer(Constants.DELAY, this);
-		tempo.start();
+		Timer time = new Timer(Constants.DELAY, this);
+		time.start();
 	}
 
 	public void localComida() {
@@ -199,7 +198,7 @@ public class Grid extends JPanel implements ActionListener {
 		// se estiver ele avista que o jogador parou de jogar devido a colisão
 		for (int i = pontos; i > 0; i--) {
 			if ((i > 4) && (x[0] == x[i]) && (y[0] == y[i])) {
-				playing = false;
+                playing = false;
 				morte_x = x[i];
 				morte_y = y[i];
 			}
