@@ -1,4 +1,4 @@
-package jogo_cobra;
+package game_snake;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -10,13 +10,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import utils.Constants;
 
-public class Grid extends JPanel implements ActionListener {
+public class Grid extends JPanel implements ActionListener,KeyListener {
 
 	private int[] x = new int[Constants.TODOS_PONTOS];
 	private int[] y = new int[Constants.TODOS_PONTOS];
@@ -42,20 +43,27 @@ public class Grid extends JPanel implements ActionListener {
 
 	private boolean playing = true;
 
-	private Image bola;
-	private Image comida;
-	private Image cabeca;
+	private Image ball;
+	private Image food;
+	private Image header;
+	
+	private static Grid instance;
 
 	public Grid() {
 		
-		addKeyListener(new TAdapter());
-
+		addKeyListener(this);				
 		setBackground(Color.GRAY);
 		setFocusable(true);
 		setSize(Constants.WIDTH, Constants.HEIGHT);
-
 		inicializaJogo();
 		setImages();
+	}
+	
+	public static Grid getInstance() {
+		if(instance == null) {
+			instance = new Grid();
+		}
+		return instance;
 	}
 	
 	public void inicializaJogo() {
@@ -65,14 +73,14 @@ public class Grid extends JPanel implements ActionListener {
 
 		positionFood();
 
-		Timer time = new Timer(Constants.DELAY, this);
+		Timer time = new Timer(Constants.DELAY, (ActionListener) this);
 		time.start();
 	}
 	
 	public void setImages() {
-		bola = new ImageIcon("C:\\Users\\pedro\\Desktop\\bola.png").getImage();
-		comida = new ImageIcon("C:\\Users\\pedro\\Desktop\\comida.png").getImage();
-		cabeca = new ImageIcon("C:\\Users\\pedro\\Desktop\\cabeça.png").getImage();
+		ball = new ImageIcon("C:\\Users\\pedro\\Desktop\\bola.png").getImage();
+		food = new ImageIcon("C:\\Users\\pedro\\Desktop\\comida.png").getImage();
+		header = new ImageIcon("C:\\Users\\pedro\\Desktop\\cabeça.png").getImage();
 	}
 
 	public void positionFood() {
@@ -90,14 +98,14 @@ public class Grid extends JPanel implements ActionListener {
 
 		if (playing) {
 			
-			g.drawImage(comida, comida_x, comida_y, this);
+			g.drawImage(food, comida_x, comida_y, this);
 
 			for (int i = 0; i < pontos; i++) {
 			
 				if (i == 0) {
-					g.drawImage(cabeca, x[i], y[i], this);
+					g.drawImage(header, x[i], y[i], this);
 				} else {
-					g.drawImage(bola, x[i], y[i], this);
+					g.drawImage(ball, x[i], y[i], this);
 				}
 				
 			}
@@ -164,7 +172,7 @@ public class Grid extends JPanel implements ActionListener {
 
 	// Método para mover a cobrinha na tela
 	public void mover() {
-		// Para cada ponto da cobrinha desenha em (x,y)
+
 		for (int i = pontos; i > 0; i--) {
 			x[i] = x[(i - 1)];
 			y[i] = y[(i - 1)];
@@ -216,40 +224,22 @@ public class Grid extends JPanel implements ActionListener {
 
 		repaint();
 	}
-	
-	private class TAdapter extends KeyAdapter {
 
-		// Método para verificar o que foi teclado
-		@Override
-		public void keyPressed(KeyEvent e) {
-			// Obtém o código da tecla
-			int key = e.getKeyCode();
+	public void keyPressed(KeyEvent e) {
+		int key = e.getKeyCode();
+		left = (key == KeyEvent.VK_LEFT) && (!right);
+		right = ((key == KeyEvent.VK_RIGHT) && (!left));
+		up = ((key == KeyEvent.VK_UP) && (!down));
+		down = ((key == KeyEvent.VK_DOWN) && (!up));		
+	}
 
-			// Verifica os movimentos e manipula as variáveis, para movimentar
-			// corretamente sobre a tela
-			if ((key == KeyEvent.VK_LEFT) && (!right)) {
-				left = true;
-				up = false;
-				down = false;
-			}
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
 
-			if ((key == KeyEvent.VK_RIGHT) && (!left)) {
-				right = true;
-				up = false;
-				down = false;
-			}
-
-			if ((key == KeyEvent.VK_UP) && (!down)) {
-				up = true;
-				left = false;
-				right = false;
-			}
-
-			if ((key == KeyEvent.VK_DOWN) && (!up)) {
-				down = true;
-				left = false;
-				right = false;
-			}
-		}
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }
